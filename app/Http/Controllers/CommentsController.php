@@ -5,43 +5,43 @@ use Illuminate\Http\JsonResponse;
 
 use Validator;
 
-use Blog\Models\GameScore;
+use Blog\Models\Comment;
 
 
-class BlogController extends Controller
+class CommentsController extends Controller
 {
     /**
-     * Game Model
-     * @var Blog\Models\GameScore
+     * Comment Model
+     * @var Blog\Models\Comment
      */
-    protected $gameScore;
+    protected $comment;
 
     protected $rules = [
-        'game' => 'required|exists:games,id',
+        'blog' => 'required|exists:blogs,id',
         'username' => 'required|min:2',
-        'score' => 'numeric|min:0',
+        'content' => 'required|min:0',
     ];
 
-    public function __construct(GameScore $gameScore) {
-        $this->gameScore = $gameScore;
+    public function __construct(Comment $comment) {
+        $this->comment = $comment;
     }
 
     public function index(JsonResponse $res) {
         $controller = $this;
-        $gameScores = $this->gameScore->orderBy('id', 'asc')->get();
+        $comments = $this->comment->orderBy('id', 'asc')->get();
 
         return new JsonResponse([
-            'data' => $gameScores->map(function($gameScore) use ($controller) {
-                return $controller->serializeGameScore($gameScore);
+            'data' => $comments->map(function($comment) use ($controller) {
+                return $controller->serializeComment($comment);
             }),
         ]);
     }
 
     public function find(JsonResponse $res, $id) {
-        $gameScore = $this->gameScore->findOrFail($id);
+        $comment = $this->comment->findOrFail($id);
 
         return new JsonResponse([
-            'data' => $this->serializeGameScore($gameScore),
+            'data' => $this->serializeComment($comment),
         ]);
     }
 
@@ -50,10 +50,10 @@ class BlogController extends Controller
         $attrs = $this->getAttrsFromRequest($req);
 
         if ($this->validateCreate($attrs)) {
-            $gameScore = $this->gameScore->create($attrs);
+            $comment = $this->comment->create($attrs);
 
             return new JsonResponse([
-                'data' => $this->serializeGameScore($gameScore),
+                'data' => $this->serializeComment($comment),
             ]);
         }
 
@@ -72,25 +72,25 @@ class BlogController extends Controller
         $type = $req->json('data.type');
         $attrs = $this->getAttrsFromRequest($req);
 
-        $game = $this->gameScore->find($id);
-        $game->fill($attrs);
-        $game->save();
+        $comment = $this->comment->find($id);
+        $comment->fill($attrs);
+        $comment->save();
 
         return new JsonResponse([
-            'data' => $this->serializeGameScore($game),
+            'data' => $this->serializeComment($comment),
         ]);
     }
 
 
     public function delete(JsonResponse $res, $id) {
-        $this->gameScore->destroy($id);
+        $this->comment->destroy($id);
 
         return new JsonResponse(null, 204);
     }
 
     protected function getAttrsFromRequest($req) {
         $attrs = $req->json('data.attributes');
-        $attrs['game'] = $req->json('data.relationships.game.data.id');
+        $attrs['blog'] = $req->json('data.relationships.blog.data.id');
 
         return $attrs;
     }
@@ -106,12 +106,12 @@ class BlogController extends Controller
         return true;
     }
 
-    protected function serializeGameScore($gameScore) {
+    protected function serializeComment($comment) {
         return [
-            'type' => 'game-scores',
-            'id' => (string) $gameScore->id,
-            'attributes' => $gameScore->toArray(),
-            'relationships' => $gameScore->getJSONRelationshipsArray(),
+            'type' => 'comments',
+            'id' => (string) $comment->id,
+            'attributes' => $comment->toArray(),
+            'relationships' => $comment->getJSONRelationshipsArray(),
         ];
     }
 }

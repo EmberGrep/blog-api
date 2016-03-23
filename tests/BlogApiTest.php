@@ -65,14 +65,12 @@ class BlogApiTest extends TestCase
                 ],
             ],
         ]);
-
-        $this->assertEquals($this->gameName, Blog::firstOrFail()->name);
     }
 
     public function testBlogIndex()
     {
-        Blog::create(['name' => $this->gameName]);
-        Blog::create(['name' => $this->gameNameTwo]);
+        Blog::create($this->blogAttrs);
+        Blog::create($this->blogAttrsTwo);
 
         $this->json('GET', 'blogs');
 
@@ -83,9 +81,7 @@ class BlogApiTest extends TestCase
                 [
                     'type' => 'blogs',
                     'id' => '1',
-                    'attributes' => [
-                        'name' => $this->gameName,
-                    ],
+                    'attributes' => $this->blogAttrs,
                     'relationships' => [
                         'comments' => ['data' => []]
                     ],
@@ -93,29 +89,23 @@ class BlogApiTest extends TestCase
                 [
                     'type' => 'blogs',
                     'id' => '2',
-                    'attributes' => [
-                        'name' => $this->gameNameTwo,
-                    ],
+                    'attributes' => $this->blogAttrsTwo,
                     'relationships' => [
                         'comments' => ['data' => []]
                     ],
                 ],
             ],
         ]);
-
-        $this->assertEquals($this->gameName, Blog::firstOrFail()->name);
     }
 
     public function testBlogUpdate()
     {
-        $game = Blog::create(['name' => $this->gameName]);
+        $game = Blog::create($this->blogAttrs);
 
         $this->json('PATCH', "blogs/{$game->id}", ['data' => [
             'type' => 'blogs',
             'id' => $game->id,
-            'attributes' => [
-                'name' => $this->gameNameTwo,
-            ],
+            'attributes' => $this->blogAttrsTwo,
             'relationships' => [
                 'comments' => ['data' => []]
             ],
@@ -127,22 +117,20 @@ class BlogApiTest extends TestCase
             'data' => [
                 'type' => 'blogs',
                 'id' => '1',
-                'attributes' => [
-                    'name' => $this->gameNameTwo,
-                ],
+                'attributes' => $this->blogAttrsTwo,
                 'relationships' => [
                     'comments' => ['data' => []]
                 ],
             ],
         ]);
 
-        $this->assertEquals($this->gameNameTwo, Blog::firstOrFail()->name, 'Blog updates should be saved to DB');
+        $this->assertEquals($this->blogAttrsTwo['title'], Blog::firstOrFail()->title, 'Blog updates should be saved to DB');
     }
 
     public function testBlogDelete()
     {
-        Blog::create(['name' => $this->gameName]);
-        Blog::create(['name' => $this->gameNameTwo]);
+        Blog::create($this->blogAttrs);
+        Blog::create($this->blogAttrsTwo);
 
         $this->json('DELETE', 'blogs/1');
 

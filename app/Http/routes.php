@@ -25,12 +25,12 @@ $router->group(['prefix' => 'blogs'], function($router) {
     $router->delete('/{id}', 'BlogsController@delete');
 });
 
-$router->group(['prefix' => 'game-scores'], function($router) {
-    $router->get('/', 'BlogController@index');
-    $router->post('/', 'BlogController@store');
-    $router->get('/{id}', 'BlogController@find');
-    $router->patch('/{id}', 'BlogController@update');
-    $router->delete('/{id}', 'BlogController@delete');
+$router->group(['prefix' => 'comments'], function($router) {
+    $router->get('/', 'CommentsController@index');
+    $router->post('/', 'CommentsController@store');
+    $router->get('/{id}', 'CommentsController@find');
+    $router->patch('/{id}', 'CommentsController@update');
+    $router->delete('/{id}', 'CommentsController@delete');
 });
 
 $router->any('reset', 'ResetController@reset');

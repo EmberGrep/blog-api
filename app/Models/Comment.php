@@ -14,6 +14,7 @@ class Comment extends Model
     protected $fillable = [
         'username',
         'content',
+        'blog',
     ];
 
     protected $hidden = [
@@ -28,6 +29,7 @@ class Comment extends Model
     }
 
     public function setBlogAttribute($value) {
+        \Log::info('Blog');
         $this->attributes['blog_id'] = $value;
     }
 

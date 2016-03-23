@@ -24,7 +24,7 @@ class Blog extends Model
     ];
 
     public function comments() {
-        return $this->hasMany(BlogScore::class);
+        return $this->hasMany(Comment::class);
     }
 
     public function getJSONRelationshipsArray() {

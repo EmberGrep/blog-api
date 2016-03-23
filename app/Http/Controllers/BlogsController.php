@@ -12,28 +12,28 @@ class BlogsController extends Controller
      * Blog Model
      * @var Blog\Models\Blog
      */
-    protected $game;
+    protected $blog;
 
-    public function __construct(Blog $game) {
-        $this->game = $game;
+    public function __construct(Blog $blog) {
+        $this->blog = $blog;
     }
 
     public function index(JsonResponse $res) {
         $controller = $this;
-        $games = $this->game->orderBy('id', 'asc')->get();
+        $blogs = $this->blog->orderBy('id', 'asc')->get();
 
         return new JsonResponse([
-            'data' => $games->map(function($game) use ($controller) {
-                return $controller->serializeBlog($game);
+            'data' => $blogs->map(function($blog) use ($controller) {
+                return $controller->serializeBlog($blog);
             }),
         ]);
     }
 
     public function find(JsonResponse $res, $id) {
-        $game = $this->game->findOrFail($id);
+        $blog = $this->blog->findOrFail($id);
 
         return new JsonResponse([
-            'data' => $this->serializeBlog($game),
+            'data' => $this->serializeBlog($blog),
         ]);
     }
 
@@ -41,10 +41,10 @@ class BlogsController extends Controller
         $type = $req->json('data.type');
         $attrs = $req->json('data.attributes');
 
-        $game = $this->game->create($attrs);
+        $blog = $this->blog->create($attrs);
 
         return new JsonResponse([
-            'data' => $this->serializeBlog($game),
+            'data' => $this->serializeBlog($blog),
         ]);
     }
 
@@ -52,27 +52,27 @@ class BlogsController extends Controller
         $type = $req->json('data.type');
         $attrs = $req->json('data.attributes');
 
-        $game = $this->game->find($id);
-        $game->fill($attrs);
-        $game->save();
+        $blog = $this->blog->find($id);
+        $blog->fill($attrs);
+        $blog->save();
 
         return new JsonResponse([
-            'data' => $this->serializeBlog($game),
+            'data' => $this->serializeBlog($blog),
         ]);
     }
 
     public function delete(JsonResponse $res, $id) {
-        $this->game->destroy($id);
+        $this->blog->destroy($id);
 
         return new JsonResponse(null, 204);
     }
 
-    protected function serializeBlog($game) {
+    protected function serializeBlog($blog) {
         return [
-            'type' => 'games',
-            'id' => (string) $game->id,
-            'attributes' => $game->toArray(),
-            'relationships' => $game->getJSONRelationshipsArray(),
+            'type' => 'blogs',
+            'id' => (string) $blog->id,
+            'attributes' => $blog->toArray(),
+            'relationships' => $blog->getJSONRelationshipsArray(),
         ];
     }
 }

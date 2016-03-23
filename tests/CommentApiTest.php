@@ -4,7 +4,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-use Blog\Models\Game;
+use Blog\Models\Blog;
 use Blog\Models\Comment;
 
 class CommentApiTest extends TestCase
@@ -32,8 +32,8 @@ class CommentApiTest extends TestCase
     public function setUp() {
         parent::setUp();
 
-        $this->blog = Game::create($this->blogAttrs);
-        $this->blogTwo = Game::create($this->blogAttrsTwo);
+        $this->blog = Blog::create($this->blogAttrs);
+        $this->blogTwo = Blog::create($this->blogAttrsTwo);
     }
 
     public function testCreateComment()
@@ -57,10 +57,7 @@ class CommentApiTest extends TestCase
             'data' => [
                 'type' => 'comments',
                 'id' => '1',
-                'attributes' => [
-                    'username' => 'AAA',
-                    'score' => 1000000,
-                ],
+                'attributes' => $this->commentAttrs,
                 'relationships' => [
                     'blog' => [
                         'data' => [
@@ -75,17 +72,14 @@ class CommentApiTest extends TestCase
         $this->assertEquals('AAA', Comment::firstOrFail()->username);
     }
 
-    public function testCannotCreateScoreForInvalidGame()
+    public function testCannotCreateScoreForInvalidBlog()
     {
         $id = $this->blog->id;
         $this->blog->delete();
 
         $this->json('POST', 'comments', ['data' => [
             'type' => 'comments',
-            'attributes' => [
-                'username' => 'AAA',
-                'score' => 1000000,
-            ],
+            'attributes' => $this->commentAttrs,
             'relationships' => [
                 'blog' => [
                     'data' => [
@@ -112,8 +106,8 @@ class CommentApiTest extends TestCase
     public function testGetComment()
     {
         $blogScore = Comment::create([
-            'username' => 'AAA',
-            'score' => 1000000,
+            'username' => $this->commentAttrs['username'],
+            'content' => $this->commentAttrs['content'],
             'blog' => $this->blog->id,
         ]);
 
@@ -125,10 +119,7 @@ class CommentApiTest extends TestCase
             'data' => [
                 'type' => 'comments',
                 'id' => '1',
-                'attributes' => [
-                    'username' => 'AAA',
-                    'score' => 1000000,
-                ],
+                'attributes' => $this->commentAttrs,
                 'relationships' => [
                     'blog' => [
                         'data' => [
@@ -145,12 +136,12 @@ class CommentApiTest extends TestCase
     {
         Comment::create([
             'username' => 'AAA',
-            'score' => 1000000,
+            'content' => "1000000",
             'blog' => $this->blog->id,
         ]);
         Comment::create([
             'username' => 'AAA',
-            'score' => 2000000,
+            'content' => "2000000",
             'blog' => $this->blogTwo->id,
         ]);
 
@@ -165,7 +156,7 @@ class CommentApiTest extends TestCase
                     'id' => '1',
                     'attributes' => [
                         'username' => 'AAA',
-                        'score' => 1000000,
+                        'content' => "1000000",
                     ],
                     'relationships' => [
                         'blog' => [
@@ -181,7 +172,7 @@ class CommentApiTest extends TestCase
                     'id' => '2',
                     'attributes' => [
                         'username' => 'AAA',
-                        'score' => 2000000,
+                        'content' => "2000000",
                     ],
                     'relationships' => [
                         'blog' => [
@@ -200,7 +191,7 @@ class CommentApiTest extends TestCase
     {
         $blogScore = Comment::create([
             'username' => 'AAA',
-            'score' => 1000000,
+            'content' => "1000000",
             'blog' => $this->blog->id,
         ]);
 
@@ -209,7 +200,7 @@ class CommentApiTest extends TestCase
             'id' => (string) $blogScore->id,
             'attributes' => [
                 'username' => 'AAA',
-                'score' => 2000000,
+                'content' => "2000000",
             ],
             'relationships' => [
                 'blog' => [
@@ -229,7 +220,7 @@ class CommentApiTest extends TestCase
                 'id' => '1',
                 'attributes' => [
                     'username' => 'AAA',
-                    'score' => 2000000,
+                    'content' => "2000000",
                 ],
                 'relationships' => [
                     'blog' => [
@@ -242,19 +233,19 @@ class CommentApiTest extends TestCase
             ],
         ]);
 
-        $this->assertEquals(2000000, Comment::firstOrFail()->score);
+        $this->assertEquals(2000000, Comment::firstOrFail()->content);
     }
 
-    public function testGameDelete()
+    public function testBlogDelete()
     {
         Comment::create([
             'username' => 'AAA',
-            'score' => 1000000,
+            'content' => "1000000",
             'blog' => $this->blog->id,
         ]);
         Comment::create([
             'username' => 'AAA',
-            'score' => 2000000,
+            'content' => "2000000",
             'blog' => $this->blogTwo->id,
         ]);
 
