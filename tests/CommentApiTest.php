@@ -4,38 +4,48 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-use GameScores\Models\Game;
-use GameScores\Models\GameScore;
+use Blog\Models\Game;
+use Blog\Models\Comment;
 
-class GameScoreApiTest extends TestCase
+class CommentApiTest extends TestCase
 {
     use DatabaseMigrations, DatabaseTransactions;
 
-    protected $gameAttrs = ['name' => 'Donkey Kong Country'];
-    protected $gameAttrsTwo = ['name' => 'Mario Kart'];
-    protected $game;
-    protected $gameTwo;
+    protected $blogAttrs = [
+        'title' => 'My First Post',
+        'content' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    ];
+
+    protected $blogAttrsTwo = [
+        'title' => 'My Second Post',
+        'content' => 'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+    ];
+
+    protected $commentAttrs = [
+        'username' => 'AAA',
+        'content' => 'Your opinion is invalid',
+    ];
+
+    protected $blog;
+    protected $blogTwo;
 
     public function setUp() {
         parent::setUp();
 
-        $this->game = Game::create($this->gameAttrs);
-        $this->gameTwo = Game::create($this->gameAttrsTwo);
+        $this->blog = Game::create($this->blogAttrs);
+        $this->blogTwo = Game::create($this->blogAttrsTwo);
     }
 
-    public function testCreateGameScore()
+    public function testCreateComment()
     {
-        $this->json('POST', 'game-scores', ['data' => [
-            'type' => 'game-scores',
-            'attributes' => [
-                'username' => 'AAA',
-                'score' => 1000000,
-            ],
+        $this->json('POST', 'comments', ['data' => [
+            'type' => 'comments',
+            'attributes' => $this->commentAttrs,
             'relationships' => [
-                'game' => [
+                'blog' => [
                     'data' => [
-                        'type' => 'games',
-                        'id' => (string) $this->game->id,
+                        'type' => 'blogs',
+                        'id' => (string) $this->blog->id,
                     ],
                 ],
             ],
@@ -45,41 +55,41 @@ class GameScoreApiTest extends TestCase
 
         $this->seeJson([
             'data' => [
-                'type' => 'game-scores',
+                'type' => 'comments',
                 'id' => '1',
                 'attributes' => [
                     'username' => 'AAA',
                     'score' => 1000000,
                 ],
                 'relationships' => [
-                    'game' => [
+                    'blog' => [
                         'data' => [
-                            'type' => 'games',
-                            'id' => (string) $this->game->id,
+                            'type' => 'blogs',
+                            'id' => (string) $this->blog->id,
                         ],
                     ],
                 ],
             ],
         ]);
 
-        $this->assertEquals('AAA', GameScore::firstOrFail()->username);
+        $this->assertEquals('AAA', Comment::firstOrFail()->username);
     }
 
     public function testCannotCreateScoreForInvalidGame()
     {
-        $id = $this->game->id;
-        $this->game->delete();
+        $id = $this->blog->id;
+        $this->blog->delete();
 
-        $this->json('POST', 'game-scores', ['data' => [
-            'type' => 'game-scores',
+        $this->json('POST', 'comments', ['data' => [
+            'type' => 'comments',
             'attributes' => [
                 'username' => 'AAA',
                 'score' => 1000000,
             ],
             'relationships' => [
-                'game' => [
+                'blog' => [
                     'data' => [
-                        'type' => 'games',
+                        'type' => 'blogs',
                         'id' => (string) $id,
                     ],
                 ],
@@ -93,37 +103,37 @@ class GameScoreApiTest extends TestCase
                 [
                     'status' => '400',
                     'title' => 'Invalid Attribute',
-                    'detail' => 'The selected game is invalid.'
+                    'detail' => 'The selected blog is invalid.'
                 ],
             ],
         ]);
     }
 
-    public function testGetGameScore()
+    public function testGetComment()
     {
-        $gameScore = GameScore::create([
+        $blogScore = Comment::create([
             'username' => 'AAA',
             'score' => 1000000,
-            'game' => $this->game->id,
+            'blog' => $this->blog->id,
         ]);
 
-        $this->json('GET', 'game-scores/1');
+        $this->json('GET', 'comments/1');
 
         $this->assertResponseOk();
 
         $this->seeJson([
             'data' => [
-                'type' => 'game-scores',
+                'type' => 'comments',
                 'id' => '1',
                 'attributes' => [
                     'username' => 'AAA',
                     'score' => 1000000,
                 ],
                 'relationships' => [
-                    'game' => [
+                    'blog' => [
                         'data' => [
-                            'type' => 'games',
-                            'id' => (string) $this->game->id,
+                            'type' => 'blogs',
+                            'id' => (string) $this->blog->id,
                         ],
                     ],
                 ],
@@ -131,53 +141,53 @@ class GameScoreApiTest extends TestCase
         ]);
     }
 
-    public function testGameScoreIndex()
+    public function testCommentIndex()
     {
-        GameScore::create([
+        Comment::create([
             'username' => 'AAA',
             'score' => 1000000,
-            'game' => $this->game->id,
+            'blog' => $this->blog->id,
         ]);
-        GameScore::create([
+        Comment::create([
             'username' => 'AAA',
             'score' => 2000000,
-            'game' => $this->gameTwo->id,
+            'blog' => $this->blogTwo->id,
         ]);
 
-        $this->json('GET', 'game-scores');
+        $this->json('GET', 'comments');
 
         $this->assertResponseOk();
 
         $this->seeJson([
             'data' => [
                 [
-                    'type' => 'game-scores',
+                    'type' => 'comments',
                     'id' => '1',
                     'attributes' => [
                         'username' => 'AAA',
                         'score' => 1000000,
                     ],
                     'relationships' => [
-                        'game' => [
+                        'blog' => [
                             'data' => [
-                                'type' => 'games',
-                                'id' => (string) $this->game->id,
+                                'type' => 'blogs',
+                                'id' => (string) $this->blog->id,
                             ],
                         ],
                     ],
                 ],
                 [
-                    'type' => 'game-scores',
+                    'type' => 'comments',
                     'id' => '2',
                     'attributes' => [
                         'username' => 'AAA',
                         'score' => 2000000,
                     ],
                     'relationships' => [
-                        'game' => [
+                        'blog' => [
                             'data' => [
-                                'type' => 'games',
-                                'id' => (string) $this->gameTwo->id,
+                                'type' => 'blogs',
+                                'id' => (string) $this->blogTwo->id,
                             ],
                         ],
                     ],
@@ -186,26 +196,26 @@ class GameScoreApiTest extends TestCase
         ]);
     }
 
-    public function testUpdateGameScore()
+    public function testUpdateComment()
     {
-        $gameScore = GameScore::create([
+        $blogScore = Comment::create([
             'username' => 'AAA',
             'score' => 1000000,
-            'game' => $this->game->id,
+            'blog' => $this->blog->id,
         ]);
 
-        $this->json('PATCH', "game-scores/{$gameScore->id}", ['data' => [
-            'type' => 'game-scores',
-            'id' => (string) $gameScore->id,
+        $this->json('PATCH', "comments/{$blogScore->id}", ['data' => [
+            'type' => 'comments',
+            'id' => (string) $blogScore->id,
             'attributes' => [
                 'username' => 'AAA',
                 'score' => 2000000,
             ],
             'relationships' => [
-                'game' => [
+                'blog' => [
                     'data' => [
-                        'type' => 'games',
-                        'id' => (string) $this->game->id,
+                        'type' => 'blogs',
+                        'id' => (string) $this->blog->id,
                     ],
                 ],
             ],
@@ -215,43 +225,43 @@ class GameScoreApiTest extends TestCase
 
         $this->seeJson([
             'data' => [
-                'type' => 'game-scores',
+                'type' => 'comments',
                 'id' => '1',
                 'attributes' => [
                     'username' => 'AAA',
                     'score' => 2000000,
                 ],
                 'relationships' => [
-                    'game' => [
+                    'blog' => [
                         'data' => [
-                            'type' => 'games',
-                            'id' => (string) $this->game->id,
+                            'type' => 'blogs',
+                            'id' => (string) $this->blog->id,
                         ],
                     ],
                 ],
             ],
         ]);
 
-        $this->assertEquals(2000000, GameScore::firstOrFail()->score);
+        $this->assertEquals(2000000, Comment::firstOrFail()->score);
     }
 
     public function testGameDelete()
     {
-        GameScore::create([
+        Comment::create([
             'username' => 'AAA',
             'score' => 1000000,
-            'game' => $this->game->id,
+            'blog' => $this->blog->id,
         ]);
-        GameScore::create([
+        Comment::create([
             'username' => 'AAA',
             'score' => 2000000,
-            'game' => $this->gameTwo->id,
+            'blog' => $this->blogTwo->id,
         ]);
 
-        $this->json('DELETE', 'game-scores/1');
+        $this->json('DELETE', 'comments/1');
 
         $this->assertResponseStatus(204);
 
-        $this->assertEquals(1, GameScore::count());
+        $this->assertEquals(1, Comment::count());
     }
 }

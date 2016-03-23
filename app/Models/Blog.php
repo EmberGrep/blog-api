@@ -1,10 +1,10 @@
-<?php namespace GameScores\Models;
+<?php namespace Blog\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Game extends Model
+class Blog extends Model
 {
-    protected $table = 'games';
+    protected $table = 'blogs';
 
     /**
      * The attributes that are mass assignable.
@@ -12,7 +12,8 @@ class Game extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
+        'title',
+        'content',
     ];
 
 
@@ -22,15 +23,15 @@ class Game extends Model
         'created_at',
     ];
 
-    public function scores() {
-        return $this->hasMany(GameScore::class);
+    public function comments() {
+        return $this->hasMany(BlogScore::class);
     }
 
     public function getJSONRelationshipsArray() {
         return [
-            'scores' => [
-                'data' => $this->scores()->lists('id')->map(function ($score) {
-                    return ['type' => 'game-scores', 'id' => (string) $score];
+            'comments' => [
+                'data' => $this->comments()->lists('id')->map(function ($score) {
+                    return ['type' => 'comments', 'id' => (string) $score];
                 }),
             ],
         ];

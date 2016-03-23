@@ -67,7 +67,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => GameScores\User::class,
+            'model' => Blog\User::class,
         ],
 
         // 'users' => [

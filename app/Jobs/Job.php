@@ -1,6 +1,6 @@
 <?php
 
-namespace GameScores\Jobs;
+namespace Blog\Jobs;
 
 use Illuminate\Bus\Queueable;
 

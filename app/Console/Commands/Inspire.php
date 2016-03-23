@@ -1,6 +1,6 @@
 <?php
 
-namespace GameScores\Console\Commands;
+namespace Blog\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Inspiring;

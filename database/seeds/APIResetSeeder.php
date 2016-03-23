@@ -12,6 +12,6 @@ class APIResetSeeder extends Seeder
     public function run()
     {
         $this->call(APIReset\GamesSeeder::class);
-        $this->call(APIReset\GameScoresSeeder::class);
+        $this->call(APIReset\BlogSeeder::class);
     }
 }

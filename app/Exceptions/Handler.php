@@ -1,6 +1,6 @@
 <?php
 
-namespace GameScores\Exceptions;
+namespace Blog\Exceptions;
 
 use Exception;
 use Illuminate\Validation\ValidationException;

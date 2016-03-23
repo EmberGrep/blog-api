@@ -17,20 +17,20 @@ $router->get('/', function () {
     ];
 });
 
-$router->group(['prefix' => 'games'], function($router) {
-    $router->get('/', 'GamesController@index');
-    $router->post('/', 'GamesController@store');
-    $router->get('/{id}', 'GamesController@find');
-    $router->patch('/{id}', 'GamesController@update');
-    $router->delete('/{id}', 'GamesController@delete');
+$router->group(['prefix' => 'blogs'], function($router) {
+    $router->get('/', 'BlogsController@index');
+    $router->post('/', 'BlogsController@store');
+    $router->get('/{id}', 'BlogsController@find');
+    $router->patch('/{id}', 'BlogsController@update');
+    $router->delete('/{id}', 'BlogsController@delete');
 });
 
 $router->group(['prefix' => 'game-scores'], function($router) {
-    $router->get('/', 'GameScoresController@index');
-    $router->post('/', 'GameScoresController@store');
-    $router->get('/{id}', 'GameScoresController@find');
-    $router->patch('/{id}', 'GameScoresController@update');
-    $router->delete('/{id}', 'GameScoresController@delete');
+    $router->get('/', 'BlogController@index');
+    $router->post('/', 'BlogController@store');
+    $router->get('/{id}', 'BlogController@find');
+    $router->patch('/{id}', 'BlogController@update');
+    $router->delete('/{id}', 'BlogController@delete');
 });
 
 $router->any('reset', 'ResetController@reset');

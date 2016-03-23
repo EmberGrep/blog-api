@@ -158,10 +158,10 @@ return [
         /*
          * Application Service Providers...
          */
-        GameScores\Providers\AppServiceProvider::class,
-        GameScores\Providers\AuthServiceProvider::class,
-        GameScores\Providers\EventServiceProvider::class,
-        GameScores\Providers\RouteServiceProvider::class,
+        Blog\Providers\AppServiceProvider::class,
+        Blog\Providers\AuthServiceProvider::class,
+        Blog\Providers\EventServiceProvider::class,
+        Blog\Providers\RouteServiceProvider::class,
 
     ],
 

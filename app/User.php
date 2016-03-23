@@ -1,6 +1,6 @@
 <?php
 
-namespace GameScores;
+namespace Blog;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 

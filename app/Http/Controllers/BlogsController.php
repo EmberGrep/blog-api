@@ -1,20 +1,20 @@
-<?php namespace GameScores\Http\Controllers;
+<?php namespace Blog\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
-use GameScores\Models\Game;
+use Blog\Models\Blog;
 
 
-class GamesController extends Controller
+class BlogsController extends Controller
 {
     /**
-     * Game Model
-     * @var GameScores\Models\Game
+     * Blog Model
+     * @var Blog\Models\Blog
      */
     protected $game;
 
-    public function __construct(Game $game) {
+    public function __construct(Blog $game) {
         $this->game = $game;
     }
 
@@ -24,7 +24,7 @@ class GamesController extends Controller
 
         return new JsonResponse([
             'data' => $games->map(function($game) use ($controller) {
-                return $controller->serializeGame($game);
+                return $controller->serializeBlog($game);
             }),
         ]);
     }
@@ -33,7 +33,7 @@ class GamesController extends Controller
         $game = $this->game->findOrFail($id);
 
         return new JsonResponse([
-            'data' => $this->serializeGame($game),
+            'data' => $this->serializeBlog($game),
         ]);
     }
 
@@ -44,7 +44,7 @@ class GamesController extends Controller
         $game = $this->game->create($attrs);
 
         return new JsonResponse([
-            'data' => $this->serializeGame($game),
+            'data' => $this->serializeBlog($game),
         ]);
     }
 
@@ -57,7 +57,7 @@ class GamesController extends Controller
         $game->save();
 
         return new JsonResponse([
-            'data' => $this->serializeGame($game),
+            'data' => $this->serializeBlog($game),
         ]);
     }
 
@@ -67,7 +67,7 @@ class GamesController extends Controller
         return new JsonResponse(null, 204);
     }
 
-    protected function serializeGame($game) {
+    protected function serializeBlog($game) {
         return [
             'type' => 'games',
             'id' => (string) $game->id,

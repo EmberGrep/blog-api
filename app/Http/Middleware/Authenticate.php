@@ -1,6 +1,6 @@
 <?php
 
-namespace GameScores\Http\Middleware;
+namespace Blog\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;

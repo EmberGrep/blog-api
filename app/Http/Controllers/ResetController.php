@@ -1,4 +1,4 @@
-<?php namespace GameScores\Http\Controllers;
+<?php namespace Blog\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Artisan;

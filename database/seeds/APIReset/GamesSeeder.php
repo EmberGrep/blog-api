@@ -2,7 +2,7 @@
 namespace APIReset;
 
 use Illuminate\Database\Seeder;
-use GameScores\Models\Game;
+use Blog\Models\Game;
 use DB;
 
 class GamesSeeder extends Seeder

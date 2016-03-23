@@ -1,6 +1,6 @@
 <?php
 
-namespace GameScores\Console;
+namespace Blog\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;

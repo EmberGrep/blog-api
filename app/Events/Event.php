@@ -1,6 +1,6 @@
 <?php
 
-namespace GameScores\Events;
+namespace Blog\Events;
 
 abstract class Event
 {

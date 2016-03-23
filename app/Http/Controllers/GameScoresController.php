@@ -1,18 +1,18 @@
-<?php namespace GameScores\Http\Controllers;
+<?php namespace Blog\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 use Validator;
 
-use GameScores\Models\GameScore;
+use Blog\Models\GameScore;
 
 
-class GameScoresController extends Controller
+class BlogController extends Controller
 {
     /**
      * Game Model
-     * @var GameScores\Models\GameScore
+     * @var Blog\Models\GameScore
      */
     protected $gameScore;
 
