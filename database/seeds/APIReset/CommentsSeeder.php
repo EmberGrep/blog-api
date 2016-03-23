@@ -2,9 +2,9 @@
 namespace APIReset;
 
 use Illuminate\Database\Seeder;
-use Blog\Models\GameScore;
+use Blog\Models\Comment;
 
-class BlogSeeder extends Seeder
+class CommentsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,28 +13,28 @@ class BlogSeeder extends Seeder
      */
     public function run()
     {
-        GameScore::truncate();
+        Comment::truncate();
 
-        $gameScores = [
+        $comments = [
             [
                 'username' => 'AAA',
-                'score' => 1000,
-                'game' => 1,
+                'content' => 1000,
+                'blog' => 1,
             ],
             [
                 'username' => 'CDC',
-                'score' => 1500,
-                'game' => 1,
+                'content' => 1500,
+                'blog' => 1,
             ],
             [
                 'username' => 'RFT',
-                'score' => 2000,
-                'game' => 1,
+                'content' => 2000,
+                'blog' => 1,
             ],
         ];
 
-        foreach ($gameScores as $gameScore) {
-            GameScore::create($gameScore);
+        foreach ($comments as $comment) {
+            Comment::create($comment);
         }
     }
 }
